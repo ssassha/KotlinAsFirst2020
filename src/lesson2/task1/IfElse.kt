@@ -134,7 +134,7 @@ fun rookOrBishopThreatens(
     if (kingX == rookX || kingY == rookY)
         if (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) return 3
         else return 1
-    if (abs(kingX - kingY) == abs(bishopX - bishopY) || abs(kingX + kingY) == abs(bishopX + bishopY)) return 2
+    if (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) return 2
     else return 0
 }
 
