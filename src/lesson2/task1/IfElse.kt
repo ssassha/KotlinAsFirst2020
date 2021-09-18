@@ -132,7 +132,7 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     if (kingX == rookX || kingY == rookY)
-        if (abs(kingX - kingY) == abs(bishopX - bishopY) || abs(kingX + kingY) == abs(bishopX + bishopY)) return 3
+        if (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) return 3
         else return 1
     if (abs(kingX - kingY) == abs(bishopX - bishopY) || abs(kingX + kingY) == abs(bishopX + bishopY)) return 2
     else return 0
@@ -147,10 +147,16 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val sideMax: Double = max(max(a, b), c)
+    val sideMin: Double = min(min(a, b), c)
+    var sideMid: Double = a
+    if ((a == sideMax && b == sideMin) || (a == sideMin && b == sideMax)) sideMid = c
+    else if ((a == sideMax && c == sideMin) || (a == sideMin && c == sideMax)) sideMid = b
+    else if ((c == sideMax && b == sideMin) || (c == sideMin && b == sideMax)) sideMid = a
     if (a + b > c && a + c > b && b + c > a) {
-        if ((max(max(a, b), c)).pow(2) < min(min(a, b), c).pow(2) + min(max(a, b), c).pow(2)) return 0
-        if (max(max(a, b), c).pow(2) == min(min(a, b), c).pow(2) + min(max(a, b), c).pow(2)) return 1
-        if (max(max(a, b), c).pow(2) > min(min(a, b), c).pow(2) + min(max(a, b), c).pow(2)) return 2
+        if (sideMax.pow(2) < sideMid.pow(2) + sideMin.pow(2)) return 0
+        if (sideMax.pow(2) == sideMid.pow(2) + sideMin.pow(2)) return 1
+        if (sideMax.pow(2) > sideMid.pow(2) + sideMin.pow(2)) return 2
         else return -1
     }
     else return -1
