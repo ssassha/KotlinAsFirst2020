@@ -90,9 +90,13 @@ fun timeForHalfWay(
     t3: Double, v3: Double
 ): Double {
     val s = (t1 * v1 + t2 * v2 + t3 * v3) / 2
-    if (s <= t1 * v1) return s / v1
-    if (s > t1 * v1 && s <= t1 * v1 + t2 * v2) return (s - v1 * t1) / v2 + t1
-    else return (s - v1 * t1 - v2 * t2) / v3 + t1 + t2
+    val sFirst = t1 * v1
+    val sSecond = t2 * v2
+    return when {
+        s <= sFirst -> s / v1
+        s > sFirst && s <= sFirst + sSecond -> (s - sFirst) / v2 + t1
+        else -> (s - sFirst - sSecond) / v3 + t1 + t2
+    }
 }
 
 /**
@@ -108,13 +112,13 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    if (kingX == rookX1 || kingY == rookY1)
-        if (kingX == rookX2 || kingY == rookY2) return 3
-        else return 1
-    if (kingX == rookX2 || kingY == rookY2) return 2
-    else return 0
-}
+): Int =
+    when {
+        (kingX == rookX2 || kingY == rookY2) && (kingX == rookX1 || kingY == rookY1)  -> 3
+        kingX == rookX1 || kingY == rookY1 -> 1
+        kingX == rookX2 || kingY == rookY2 -> 2
+        else -> 0
+    }
 
 /**
  * Простая (2 балла)
@@ -130,14 +134,13 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    if (kingX == rookX || kingY == rookY)
-        if (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) return 3
-        else return 1
-    if (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) return 2
-    else return 0
-}
-
+): Int =
+    when {
+        (kingX == rookX || kingY == rookY) && (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) -> 3
+        kingX == rookX || kingY == rookY -> 1
+        kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY -> 2
+        else -> 0
+    }
 /**
  * Простая (2 балла)
  *
@@ -147,19 +150,21 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val sideMax: Double = max(max(a, b), c)
-    val sideMin: Double = min(min(a, b), c)
-    var sideMid: Double = a
-    if ((a == sideMax && b == sideMin) || (a == sideMin && b == sideMax)) sideMid = c
-    else if ((a == sideMax && c == sideMin) || (a == sideMin && c == sideMax)) sideMid = b
-    else if ((c == sideMax && b == sideMin) || (c == sideMin && b == sideMax)) sideMid = a
-    if (a + b > c && a + c > b && b + c > a) {
-        if (sideMax.pow(2) < sideMid.pow(2) + sideMin.pow(2)) return 0
-        if (sideMax.pow(2) == sideMid.pow(2) + sideMin.pow(2)) return 1
-        if (sideMax.pow(2) > sideMid.pow(2) + sideMin.pow(2)) return 2
-        else return -1
+    val sideMax = maxOf(a, b, c)
+    val sideMin = minOf(a, b, c)
+    var sideMid = a
+    when {
+        (a == sideMax && b == sideMin) || (a == sideMin && b == sideMax) -> sideMid = c
+        (a == sideMax && c == sideMin) || (a == sideMin && c == sideMax) -> sideMid = b
+        (c == sideMax && b == sideMin) || (c == sideMin && b == sideMax) -> sideMid = a
     }
-    else return -1
+    return if (a + b > c && a + c > b && b + c > a == true) when {
+        sideMax.pow(2) < sideMid.pow(2) + sideMin.pow(2) -> 0
+        sideMax.pow(2) == sideMid.pow(2) + sideMin.pow(2) -> 1
+        sideMax.pow(2) > sideMid.pow(2) + sideMin.pow(2) -> 2
+        else -> -1
+    }
+    else -1
 }
 
 /**
@@ -170,10 +175,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (a <= c && c <= b && b <= d) return abs(b - c)
-    if (c <= a && a <= b && b <= d) return abs(b - a)
-    if (c <= a && a <= d && d <= b) return abs(d - a)
-    if (a <= c && c <= d && d <= b) return abs(d - c)
-    else return -1
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+    when {
+        a <= c && c <= b && b <= d -> abs(b - c)
+        c <= a && a <= b && b <= d -> abs(b - a)
+        c <= a && a <= d && d <= b -> abs(d - a)
+        a <= c && c <= d && d <= b -> abs(d - c)
+        else -> -1
+    }
