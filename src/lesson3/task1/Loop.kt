@@ -2,7 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -72,7 +72,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var k = 0
+    do (k++) while (n % 10.0.pow(k) != n.toDouble())
+    return k
+}
 
 /**
  * Простая (2 балла)
@@ -80,7 +84,12 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int =
+    when (n) {
+        1, 2 -> 1
+        else -> fib(n - 1) + fib(n - 2)
+    }
+
 
 /**
  * Простая (2 балла)
@@ -120,7 +129,21 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var lcm = 1
+    var d = max(m, n)
+    var e = min(m, n)
+    for (k in 2..min(m, n)) {
+        if (isPrime(k)) {
+            while (e % k == 0) {
+                lcm *= k
+                e /= k
+                if (d % k == 0) d /= k
+            }
+        }
+    }
+    return lcm * d
+}
 
 /**
  * Средняя (3 балла)
@@ -192,7 +215,22 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var digInOrder = 0
+    var i = 1.0
+    var sqr = 0
+    while (digInOrder < n) {
+        sqr = i.pow(2).toInt()
+        digInOrder += digitNumber(sqr)
+        i += 1
+    }
+    val digit: Int = if (digInOrder == n) {
+        sqr % 10
+    } else {
+        (sqr / 10.0.pow(digInOrder - n).toInt()) % 10
+    }
+    return digit
+}
 
 /**
  * Сложная (5 баллов)
@@ -203,4 +241,19 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var digInOrder = 0
+    var i = 1
+    var numbFib = 0
+    while (digInOrder < n) {
+        numbFib = fib(i)
+        digInOrder += digitNumber(numbFib)
+        i += 1
+    }
+    val digit: Int = if (digInOrder == n) {
+        numbFib % 10
+    } else {
+        (numbFib / 10.0.pow(digInOrder - n).toInt()) % 10
+    }
+    return digit
+}
