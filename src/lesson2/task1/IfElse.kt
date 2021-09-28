@@ -136,7 +136,9 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int =
     when {
-        (kingX == rookX || kingY == rookY) && (kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY) -> 3
+        (kingX == rookX || kingY == rookY) &&
+                (kingX - kingY == bishopX - bishopY ||
+                        kingX + kingY == bishopX + bishopY) -> 3
         kingX == rookX || kingY == rookY -> 1
         kingX - kingY == bishopX - bishopY || kingX + kingY == bishopX + bishopY -> 2
         else -> 0
@@ -152,13 +154,13 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sideMax = maxOf(a, b, c)
     val sideMin = minOf(a, b, c)
-    var sideMid = a
-    when {
-        (a == sideMax && b == sideMin) || (a == sideMin && b == sideMax) -> sideMid = c
-        (a == sideMax && c == sideMin) || (a == sideMin && c == sideMax) -> sideMid = b
-        (c == sideMax && b == sideMin) || (c == sideMin && b == sideMax) -> sideMid = a
+    val sideMid: Double = when {
+        (a == sideMax && b == sideMin) || (a == sideMin && b == sideMax) -> c
+        (a == sideMax && c == sideMin) || (a == sideMin && c == sideMax) -> b
+        (c == sideMax && b == sideMin) || (c == sideMin && b == sideMax) -> a
+        else -> a
     }
-    return if (a + b > c && a + c > b && b + c > a == true) when {
+    return if (a + b > c && a + c > b && b + c > a) when {
         sideMax.pow(2) < sideMid.pow(2) + sideMin.pow(2) -> 0
         sideMax.pow(2) == sideMid.pow(2) + sideMin.pow(2) -> 1
         sideMax.pow(2) > sideMid.pow(2) + sideMin.pow(2) -> 2
