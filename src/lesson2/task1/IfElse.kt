@@ -154,10 +154,9 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sideMax = maxOf(a, b, c)
     val sideMin = minOf(a, b, c)
-    val sideMid: Double = when {
+    val sideMid = when {
         (a == sideMax && b == sideMin) || (a == sideMin && b == sideMax) -> c
         (a == sideMax && c == sideMin) || (a == sideMin && c == sideMax) -> b
-        (c == sideMax && b == sideMin) || (c == sideMin && b == sideMax) -> a
         else -> a
     }
     return if (a + b > c && a + c > b && b + c > a) when {

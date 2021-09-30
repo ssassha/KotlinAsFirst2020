@@ -87,11 +87,10 @@ fun digitNumber(n: Int): Int =
 fun fib(n: Int): Int {
     var a = 1
     var b = 1
-    var c: Int
     var res = 2
     while (res < n) {
         res += 1
-        c = b
+        val c = b
         b += a
         a = c
     }
@@ -113,10 +112,8 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    for (i in n / 2 downTo 2) if (n % i == 0) return i
-    return 1
-}
+fun maxDivisor(n: Int): Int =
+    n / minDivisor(n)
 
 /**
  * Простая (2 балла)
@@ -134,13 +131,16 @@ fun maxDivisor(n: Int): Int {
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int =
-    when {
-        x == 1 -> 0
-        x == 2 -> 1
-        x == 4 -> 2
-        else -> if (x % 2 == 0) collatzSteps(x / 2) + 1 else collatzSteps(x * 3 + 1) + 1
+fun collatzSteps(x: Int): Int {
+    var number = x
+    var count = 0
+    while (number != 1) {
+        if (number % 2 == 0) number /= 2
+        else number = 3 * number + 1
+        count++
     }
+    return count
+}
 
 /**
  * Средняя (3 балла)
@@ -148,7 +148,7 @@ fun collatzSteps(x: Int): Int =
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
+fun gcd(m: Int, n: Int): Int { //Алгоритм Евклида на нахождение НОД
     var a = maxOf(m, n)
     var b = minOf(m, n)
     var c = a - b
@@ -156,9 +156,11 @@ fun lcm(m: Int, n: Int): Int {
         a = maxOf(c, b)
         b = minOf(c, b)
         c = a - b
-    }               //Алгоритм Евклида на нахождение НОД
-    return m * n / a //Связь НОК и НОД
+    }
+    return a
 }
+
+fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
 /**
  * Средняя (3 балла)
@@ -168,7 +170,7 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean =
-    lcm(m, n) / (m * n) == 1 //Связь НОК и НОД
+    gcd(m, n) == 1
 
 /**
  * Средняя (3 балла)
@@ -209,10 +211,9 @@ fun isPalindrome(n: Int): Boolean =
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var number = n
-    var digit = number % 10
+    val digit = number % 10
     while (number > 0) {
         if (digit != number % 10) return true
-        digit = number % 10
         number /= 10
     }
     return false
@@ -222,12 +223,30 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Средняя (4 балла)
  *
  * Для заданного x рассчитать с заданной точностью eps
- * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
+ * sin(x) = x - x^3 / 3! +x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю.
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    if (x % PI == 0.0) return 0.0
+    if ((x % (3 * PI / 2)) % 2 == 0.0) return -1.0
+    if ((x % (3 * PI / 2)) % 2 == PI / 2) return 1.0
+    val a = x % (2 * PI)
+    var fact = 1
+    var power = 1
+    var walkingMinus = 1
+    var finRes = 0.0
+    var notFinRes = a
+    while (abs(notFinRes) >= eps) {
+        finRes += notFinRes
+        power += 2
+        walkingMinus *= -1
+        fact *= (fact + 1) * (fact + 2)
+        notFinRes = a.pow(power) / fact * walkingMinus
+    }
+    return finRes
+}
 
 /**
  * Средняя (4 балла)
@@ -238,7 +257,25 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    if (x % PI == PI / 2) return 0.0
+    val a = x % (2 * PI)
+    if (a == 0.0) return 1.0
+    if (a == PI) return -1.0
+    var fact = 2
+    var power = 2
+    var walkingMinus = -1
+    var finRes = 0.0
+    var notFinRes = 1.0
+    while (abs(notFinRes) >= eps) {
+        finRes += notFinRes
+        notFinRes = a.pow(power) / fact * walkingMinus
+        power += 2
+        walkingMinus *= -1
+        fact *= (fact + 1) * (fact + 2)
+    }
+    return finRes
+}
 
 /**
  * Сложная (4 балла)
