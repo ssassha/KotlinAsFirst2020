@@ -233,17 +233,16 @@ fun sin(x: Double, eps: Double): Double {
     if ((x % (3 * PI / 2)) % 2 == 0.0) return -1.0
     if ((x % (3 * PI / 2)) % 2 == PI / 2) return 1.0
     val a = x % (2 * PI)
-    var fact = 1
-    var power = 1
-    var walkingMinus = 1
-    var finRes = 0.0
+    val mn = a.pow(2) - 1
+    var fact = 6.0
+    var power = 3
+    var finRes = a
     var notFinRes = a
     while (abs(notFinRes) >= eps) {
+        notFinRes = a.pow(power) * mn / (fact.pow(2) * (power + 1) * (power + 2))
         finRes += notFinRes
-        power += 2
-        walkingMinus *= -1
-        fact *= (fact + 1) * (fact + 2)
-        notFinRes = a.pow(power) / fact * walkingMinus
+        power += 4
+        fact *= power * (power - 1) * (power - 2) * (power - 4)
     }
     return finRes
 }
