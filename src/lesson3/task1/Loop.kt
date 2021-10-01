@@ -223,27 +223,27 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Средняя (4 балла)
  *
  * Для заданного x рассчитать с заданной точностью eps
- * sin(x) = x - x^3 / 3! +x^5 / 5! - x^7 / 7! + ...
+ * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю.
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    if (x % PI == 0.0000) return 0.0
-    if ((x % (3 * PI / 2)) % 2 == 0.0000) return -1.0
+    if (x % PI == 0.0) return 0.0
+    if ((x % (3 * PI / 2)) % 2 == 0.0) return -1.0
     if ((x % (3 * PI / 2)) % 2 == PI / 2) return 1.0
     val a = x % (2 * PI)
-    val mn = a.pow(2)
     var fact = 1.0
-    var power = 1
-    var finRes = 0.0
-    var notFinRes = 0.0
+    var power = 1.0
+    var walkingMinus = 1
+    var finRes = a
+    var notFinRes = 9999.0
     while (abs(notFinRes) >= eps) {
-        val po = (power + 1) * (power + 2)
-        notFinRes = a.pow(power) * (po - mn) / (fact.pow(2) * po)
+        walkingMinus *= -1
+        fact *= (power + 1) * (power + 2)
+        power += 2
+        notFinRes = a.pow(power) / fact * walkingMinus
         finRes += notFinRes
-        power += 4
-        fact *= power * (power - 1) * (power - 2) * (power - 3)
     }
     return finRes
 }
