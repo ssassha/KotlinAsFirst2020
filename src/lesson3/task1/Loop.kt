@@ -262,7 +262,7 @@ fun cos(x: Double, eps: Double): Double {
     val a = x % (2 * PI)
     if (a == 0.0) return 1.0
     if (a == PI) return -1.0
-    var fact = 2.0
+    var fact = 1.0
     var power = 0.0
     var walkingMinus = 1
     var finRes = 1.0
