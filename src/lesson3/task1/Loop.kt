@@ -229,8 +229,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    if (x % PI == 0.0) return 0.0
-    if ((x % (3 * PI / 2)) % 2 == 0.0) return -1.0
+    if (x % PI == 0.0000) return 0.0
+    if ((x % (3 * PI / 2)) % 2 == 0.0000) return -1.0
     if ((x % (3 * PI / 2)) % 2 == PI / 2) return 1.0
     val a = x % (2 * PI)
     val mn = a.pow(2)
