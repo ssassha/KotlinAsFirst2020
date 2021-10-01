@@ -237,7 +237,7 @@ fun sin(x: Double, eps: Double): Double {
     var power = 1.0
     var walkingMinus = 1
     var finRes = a
-    var notFinRes = 9999.0
+    var notFinRes = 1.0
     while (abs(notFinRes) >= eps) {
         walkingMinus *= -1
         fact *= (power + 1) * (power + 2)
@@ -262,17 +262,17 @@ fun cos(x: Double, eps: Double): Double {
     val a = x % (2 * PI)
     if (a == 0.0) return 1.0
     if (a == PI) return -1.0
-    var fact = 2
-    var power = 2
-    var walkingMinus = -1
-    var finRes = 0.0
+    var fact = 2.0
+    var power = 0.0
+    var walkingMinus = 1
+    var finRes = 1.0
     var notFinRes = 1.0
     while (abs(notFinRes) >= eps) {
-        finRes += notFinRes
-        notFinRes = a.pow(power) / fact * walkingMinus
         power += 2
         walkingMinus *= -1
-        fact *= (fact + 1) * (fact + 2)
+        fact *= (power - 1) * power
+        notFinRes = a.pow(power) / fact * walkingMinus
+        finRes += notFinRes
     }
     return finRes
 }
@@ -286,7 +286,15 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var number = 1
+    var line = 1
+    while (line < n) {
+        number++
+        line += digitNumber(number.toDouble().pow(2).toInt())
+    }
+    return (number.toDouble().pow(2).toInt()) / 10.0.pow(line - n).toInt() % 10
+}
 
 /**
  * Сложная (5 баллов)
@@ -297,4 +305,12 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var number = 1
+    var line = 1
+    while (line < n) {
+        number++
+        line += digitNumber(fib(number))
+    }
+    return fib(number) / 10.0.pow(line - n).toInt() % 10
+}
