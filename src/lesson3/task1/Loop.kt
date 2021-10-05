@@ -136,21 +136,32 @@ fun collatzSteps(x: Int): Int = TODO()
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var lcm = 1
-    var d = max(m, n)
-    var e = min(m, n)
-    for (k in 2..min(m, n)) {
-        if (isPrime(k)) {
-            while (e % k == 0) {
-                lcm *= k
-                e /= k
-                if (d % k == 0) d /= k
+    /*
+        var lcm = 1
+        var d = max(m, n)
+        var e = min(m, n)
+        for (k in 2..min(m, n)) {
+            if (isPrime(k)) {
+                while (e % k == 0) {
+                    lcm *= k
+                    e /= k
+                    if (d % k == 0) d /= k
+                }
             }
         }
+        return lcm * d
+    */
+    var r1 = max(m, n)
+    var r2 = min(m, n)
+    while (r2 != 0) {
+        r1 %= r2
+        if (r1 == 0) {
+            return n * m / r2
+        }
+        r2 %= r1
     }
-    return lcm * d
+    return n * m / r1
 }
-
 /**
  * Средняя (3 балла)
  *
@@ -230,7 +241,7 @@ fun squareSequenceDigit(n: Int): Int {
         digInOrder += digitNumber(sqr)
         i += 1
     }
-    val digit: Int = if (digInOrder == n) {
+    val digit = if (digInOrder == n) {
         sqr % 10
     } else {
         (sqr / 10.0.pow(digInOrder - n).toInt()) % 10
