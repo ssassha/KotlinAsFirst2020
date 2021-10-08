@@ -3,7 +3,9 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.collections.indexOf as indexOf
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -231,7 +233,21 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val possibleVal = listOf<String>(
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
+        "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+        "u", "v", "w", "x", "y", "z"
+    )
+    var n = 0
+    var k = str.length - 1
+    for (i in 0 until str.length) {
+        n += possibleVal.indexOf(str[i].toString()) * base.toDouble().pow(k).toInt()
+        k--
+    }
+    return n
+}
 
 /**
  * Сложная (5 баллов)
@@ -241,7 +257,21 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var interimNumber = n
+    var romanNumb = ""
+    var i = -1
+    val optNumb = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val optNumbRoman = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    for (j in optNumb) {
+        i++
+        while (j <= interimNumber) {
+            interimNumber -= j
+            romanNumb += optNumbRoman[i]
+        }
+    }
+    return romanNumb
+}
 
 /**
  * Очень сложная (7 баллов)
