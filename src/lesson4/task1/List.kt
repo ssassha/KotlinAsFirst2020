@@ -121,14 +121,14 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = sqrt((v.map { it * it }).sum())
+fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
 
 /**
  * Простая (2 балла)
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.map { it }).sum() / list.size else 0.0
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.size else 0.0
 
 /**
  * Средняя (3 балла)
@@ -139,7 +139,8 @@ fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.map { it }).
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val mean = if (list.isNotEmpty()) (list.map { it }).sum() / list.size else 0.0
+    val notMut: List<Double> = list.subList(0, list.size)
+    val mean = mean(notMut)
     for (i in 0 until list.size) list[i] -= mean
     return list
 }
@@ -152,11 +153,9 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    return if (a.isNotEmpty() && b.isNotEmpty()) {
-        val res = mutableListOf<Int>()
-        for (i in 0 until a.size) res.add(a[i] * b[i])
-        res.sum()
-    } else 0
+    var res = 0
+    for (i in 0 until a.size) res += a[i] * b[i]
+    return res
 }
 
 /**
@@ -168,11 +167,13 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    if (p.isNotEmpty()) {
-        var res = 0
-        for (i in 0 until p.size) res += p[i] * (x.toDouble().pow(i)).toInt()
-        return res
-    } else return 0
+    var res = 0
+    var arg = 1
+    for (i in 0 until p.size) {
+        res += p[i] * arg
+        arg *= x
+    }
+    return res
 }
 
 /**
@@ -186,14 +187,9 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    if (list.size > 1) {
-        for (i in list.size - 1 downTo 0) {
-            for (j in 0 until i) list[i] += list[j]
-        }
-    }
+    for (i in list.size - 1 downTo 0) list[i] = list.subList(0, i + 1).sum()
     return list
 }
-
 /**
  * Средняя (3 балла)
  *
@@ -204,12 +200,13 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     val res = mutableListOf<Int>()
     var number = n
-    while (number != 1) for (i in 2..n) {
-        if (number % i == 0) {
-            res.add(i)
-            number /= i
-            break
+    var arg = 2
+    while (number != 1) {
+        while (number % arg == 0) {
+            number /= arg
+            res.add(arg)
         }
+        arg ++
     }
     return res
 }
@@ -222,7 +219,7 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    val str = factorize(n).sorted()
+    val str = factorize(n)
     var a = str[0]
     var res = "$a"
     for (i in 1 until str.size) {
@@ -360,8 +357,7 @@ fun russian(n: Int): String {
                         0, in 5..9 -> "тысяч"
                         1 -> "одна тысяча"
                         2 -> "две тысячи"
-                        3, 4 -> "тысячи"
-                        else -> "ошибка"
+                        else -> "тысячи"
                     }
                 }
             }
