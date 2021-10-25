@@ -234,8 +234,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val temp = word.toLowerCase().toList()
-    return chars.containsAll(temp)
+    val temp = word.toLowerCase().toSet()
+    return chars.toString().toLowerCase().toSet().containsAll(temp)
 }
 
 /**
@@ -316,18 +316,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val res = mutableMapOf<String, Set<String>>()
-    for ((person, met) in friends) {
-        res[person] = met
-        for (meeting in met) {
-            if (friends[meeting] != null) res[person] = res[person]!! + friends[meeting]!!
-            if (res[meeting] == null) res[meeting] = setOf()
-        }
-        if (res[person]?.contains(person) == true) res[person] = res[person]!! - person
-    }
-    return res
-}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 /**
  * Сложная (6 баллов)
@@ -348,7 +337,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var res = Pair(-1, -1)
-    for (i in 1 until number / 2) {
+    for (i in 0 until number / 2) {
         if ((i in list) && (number - i) in list) {
             res = Pair(list.indexOf(i), list.indexOf(number - i)).sorted()
         }
