@@ -377,8 +377,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 val j = dynamicWeight.indexOf(i)
                 table[j] =
                     maxOf(
-                        temp[j], weightPrice.second +
-                                temp[if (j - weightPrice.first > 0) j - weightPrice.first else 0]
+                        temp[j], weightPrice.second + if (j - weightPrice.first > 0)
+                            temp[j - weightPrice.first] else 0
                     )
             }
 
