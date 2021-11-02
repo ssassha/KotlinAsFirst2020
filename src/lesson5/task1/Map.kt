@@ -375,18 +375,17 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (i in dynamicWeight) {
             if (i >= weightPrice.first) {
                 val j = dynamicWeight.indexOf(i)
-                table[dynamicWeight.indexOf(i)] =
+                table[j] =
                     maxOf(
                         temp[j], weightPrice.second +
-                                temp[if (j - weightPrice.first >= 0) j - weightPrice.first else 0]
+                                temp[if (j - weightPrice.first > 0) j - weightPrice.first else 0]
                     )
             }
 
         }
         if (temp.last() != table.last())
-            if (table.last() - weightPrice.second > 0) res.add(treasure) else res = mutableSetOf<String>(treasure)
-        temp = table
+            if (table.last() - weightPrice.second > 0) res.add(treasure) else res = mutableSetOf(treasure)
+        temp = table.toList() as MutableList<Int>
     }
     return res
-
 }
