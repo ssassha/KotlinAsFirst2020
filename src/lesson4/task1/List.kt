@@ -139,7 +139,7 @@ fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val mean = mean(list.subList(0, list.size))
+    val mean = mean(list)
     for (i in 0 until list.size) list[i] -= mean
     return list
 }
@@ -189,6 +189,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
     for (i in 1 until list.size) list[i] += list[i - 1]
     return list
 }
+
 /**
  * Средняя (3 балла)
  *
@@ -205,7 +206,7 @@ fun factorize(n: Int): List<Int> {
             number /= arg
             res.add(arg)
         }
-        arg ++
+        arg++
     }
     return res
 }
