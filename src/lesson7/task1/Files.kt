@@ -77,12 +77,12 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
-    val text = File(inputName).readLines().toString().toLowerCase()
+    val text = File(inputName).readLines().toString()
 
     for (substr in substrings) {
         var textCopy = text
         var count = 0
-        while (textCopy.contains(substr.toLowerCase())) {
+        while (textCopy.contains(substr, ignoreCase = true)) {
             count++
             textCopy = textCopy.removeRange(0..textCopy.indexOf(substr, 0, true))
         }
