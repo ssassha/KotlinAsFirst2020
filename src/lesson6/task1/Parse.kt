@@ -102,7 +102,10 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (!phone.matches(Regex("""(\+\d+)?[ \-]*(\([ -]*\d+[ \-\d]*\))?[ \-\d]*"""))) return ""
+    else return Regex("""[\- \)\(]""").replace(phone, "")
+}
 
 /**
  * Средняя (5 баллов)
@@ -138,7 +141,23 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val exceptionCheck = Regex("""^\d+( [\+\-] \d+)*""")
+    var number = 0
+    var sum = 0
+    if (!expression.matches(exceptionCheck)) throw IllegalArgumentException()
+    else {
+        val listOfSymbols = expression.split(" ")
+        sum += listOfSymbols[0].toInt()
+        for (i in 0 until listOfSymbols.size)
+            when (listOfSymbols[i]) {
+                "+" -> sum += listOfSymbols[i + 1].toInt()
+                "-" -> sum -= listOfSymbols[i + 1].toInt()
+                else -> continue
+            }
+        return sum
+    }
+}
 
 /**
  * Сложная (6 баллов)
