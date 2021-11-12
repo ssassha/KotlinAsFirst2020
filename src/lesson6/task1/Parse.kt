@@ -143,7 +143,6 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val exceptionCheck = Regex("""^\d+( [\+\-] \d+)*""")
-    var number = 0
     var sum = 0
     if (!expression.matches(exceptionCheck)) throw IllegalArgumentException()
     else {
@@ -181,7 +180,19 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val formatCheck =
+        Regex("""(([а-я]|[А-Я])+ \d+(\.\d+)?; )*([а-я]|[А-Я])+ \d+(\.\d+)?""")
+    if (description.matches(formatCheck)) {
+        val costs = Regex("""[^\d\.]+""").split(description).filter { it != "" }.map { it.toDouble() }
+        val product = Regex("""[ ;\d\.]+""").split(description)
+        var maxCost = 0.0
+        for (i in costs) {
+            if (i > maxCost) maxCost = i
+        }
+        return product[costs.indexOf(maxCost)]
+    } else return ""
+}
 
 /**
  * Сложная (6 баллов)

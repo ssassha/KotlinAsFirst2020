@@ -261,8 +261,8 @@ fun roman(n: Int): String {
     var interimNumber = n
     var romanNumb = ""
     var i = -1
-    val optNumb = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-    val optNumbRoman = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val optNumb = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val optNumbRoman = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     for (j in optNumb) {
         i++
         while (j <= interimNumber) {
