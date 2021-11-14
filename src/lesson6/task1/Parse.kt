@@ -138,7 +138,23 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val str = expression.split(" ")
+    var res = 0
+    var minus = 1
+    for (i in str) {
+        if (str.indexOf(i) % 2 == 0) {
+            if (i.all { it in '0'..'9' })
+                res += i.toInt() * minus
+            else throw IllegalArgumentException()
+        } else minus = when (i) {
+            "+" -> 1
+            "-" -> -1
+            else -> throw IllegalArgumentException()
+        }
+    }
+    return res
+}
 
 /**
  * Сложная (6 баллов)
@@ -162,7 +178,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val productPrice = description.split("; ")
+    var maxPrice = 0.0
+    var res = ""
+    for (i in productPrice) {
+        val pair = i.split(" ")
+        if (pair.size != 2) return ""
+        if (pair.last().toDouble() > maxPrice) {
+            maxPrice = pair.last().toDouble()
+            res = pair.first()
+        }
+    }
+    return res
+}
 
 /**
  * Сложная (6 баллов)
