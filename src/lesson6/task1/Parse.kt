@@ -185,7 +185,7 @@ fun mostExpensive(description: String): String {
     for (i in productPrice) {
         val pair = i.split(" ")
         if (pair.size != 2) return ""
-        if (pair.last().toDouble() > maxPrice) {
+        if (pair.last().toDouble() >= maxPrice) {
             maxPrice = pair.last().toDouble()
             res = pair.first()
         }
