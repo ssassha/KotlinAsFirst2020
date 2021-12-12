@@ -301,7 +301,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val input = File(inputName).readLines()
     val output = File(outputName).bufferedWriter()
     var opened = mutableListOf<String>()
-    var lastLineIsNotEmpty = true    // была ли прошлая строка не пустой
+    var lastLineIsNotEmpty = false    // была ли прошлая строка не пустой
 
     output.write("<html>\n" + "<body>\n" + "<p>\n")
 
