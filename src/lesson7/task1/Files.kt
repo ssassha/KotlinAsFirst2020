@@ -301,15 +301,18 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val input = File(inputName).readLines()
     val output = File(outputName).bufferedWriter()
     var opened = mutableListOf<String>()
+    var lastLineIsNotEmpty = false    // была ли прошлая строка
 
     output.write("<html>\n" + "<body>\n" + "<p>\n")
 
     for (line in input) {
         var workingLine = line
-        if (workingLine.isEmpty()) {
+        if (workingLine.isEmpty() && lastLineIsNotEmpty) {
             output.write("</p>\n" + "<p>\n")
+            lastLineIsNotEmpty = false
             continue
         }
+        lastLineIsNotEmpty = true
         while (workingLine.contains("~~")) {
             if (opened.contains("s")) {
                 workingLine = workingLine.replaceFirst("~~", "</s>")
@@ -350,35 +353,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
         }
-/*        while (workingLine.contains(Regex("""[^\*]\*{2}[^\*]"""))) {
-            if (opened.contains("b")) {
-                workingLine = workingLine.replaceFirst("**", "</b>")
-                opened = opened.filter { it != "b" }.toMutableList()
-            } else {
-                workingLine = workingLine.replaceFirst("**", "<b>")
-                opened.add("b")
-            }
-        }
-        while (workingLine.contains(Regex("""[^\*]\*[^\*]"""))) {
-            if (opened.contains("i")) {
-                workingLine = workingLine.replaceFirst("*", "</i>")
-                opened = opened.filter { it != "i" }.toMutableList()
-            } else {
-                workingLine = workingLine.replaceFirst("*", "<i>")
-                opened.add("i")
-            }
-        }
-        while (workingLine.contains("***")) {
-            if (opened.containsAll(listOf("i", "b"))) {
-                if (opened.indexOf("i") > opened.indexOf("b"))
-                    workingLine = workingLine.replaceFirst("***", "</i></b>") // b, i
-                else workingLine = workingLine.replaceFirst("***", "</b></i>")
-                opened = opened.filter { it != "i" && it != "b" }.toMutableList()
-            } else {
-                workingLine = workingLine.replaceFirst("***", "<b><i>")
-                opened.addAll(listOf("b", "i"))
-            }
-        } */
         output.write(workingLine + "\n")
     }
     output.write("</p>\n" + "</body>\n" + "</html>")
