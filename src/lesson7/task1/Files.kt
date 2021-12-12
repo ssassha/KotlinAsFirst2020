@@ -307,7 +307,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     for (line in input) {
         var workingLine = line
-        if (workingLine.isEmpty() || workingLine.matches(Regex(""" +"""))) {
+        if (workingLine.isEmpty() || workingLine == "\t") {
             if (lastLineIsNotEmpty) {
                 output.write("</p>\n" + "<p>\n")
                 lastLineIsNotEmpty = false
