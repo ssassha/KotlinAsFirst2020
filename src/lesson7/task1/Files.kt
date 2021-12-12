@@ -354,7 +354,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
         }
-        workingLine = workingLine.replace("</p><p></p>", "</p>")
+        workingLine = workingLine.replaceFirst("</p><p></p>", "</p>")
         output.write(workingLine + "\n")
     }
     output.write("</p>\n" + "</body>\n" + "</html>")
