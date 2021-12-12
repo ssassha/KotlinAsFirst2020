@@ -313,8 +313,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 lastLineIsNotEmpty = false
             }
             continue
-        }
-        lastLineIsNotEmpty = true
+        } else lastLineIsNotEmpty = true
         while (workingLine.contains("~~")) {
             if (opened.contains("s")) {
                 workingLine = workingLine.replaceFirst("~~", "</s>")
