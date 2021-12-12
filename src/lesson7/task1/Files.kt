@@ -297,7 +297,92 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+
+    val input = File(inputName).readLines()
+    val output = File(outputName).bufferedWriter()
+    var opened = mutableListOf<String>()
+
+    output.write("<html>\n" + "<body>\n" + "<p>\n")
+
+    for (line in input) {
+        var workingLine = line
+        if (workingLine.isEmpty()) {
+            output.write("</p>\n" + "<p>\n")
+            continue
+        }
+        while (workingLine.contains("~~")) {
+            if (opened.contains("s")) {
+                workingLine = workingLine.replaceFirst("~~", "</s>")
+                opened = opened.filter { it != "s" }.toMutableList()
+            } else {
+                workingLine = workingLine.replaceFirst("~~", "<s>")
+                opened.add("s")
+            }
+        }
+        while (workingLine.contains(Regex("""\*{1,3}"""))) {
+            val substrToChange = workingLine.split(Regex("""[^*]+"""))
+            for (substr in substrToChange) {
+                when (substr) {
+                    "*" -> if (opened.contains("i")) {
+                        workingLine = workingLine.replaceFirst("*", "</i>")
+                        opened = opened.filter { it != "i" }.toMutableList()
+                    } else {
+                        workingLine = workingLine.replaceFirst("*", "<i>")
+                        opened.add("i")
+                    }
+                    "**" -> if (opened.contains("b")) {
+                        workingLine = workingLine.replaceFirst("**", "</b>")
+                        opened = opened.filter { it != "b" }.toMutableList()
+                    } else {
+                        workingLine = workingLine.replaceFirst("**", "<b>")
+                        opened.add("b")
+                    }
+                    "***" ->
+                        if (opened.containsAll(listOf("i", "b"))) {
+                            if (opened.indexOf("i") > opened.indexOf("b"))
+                                workingLine = workingLine.replaceFirst("***", "</i></b>") // b, i
+                            else workingLine = workingLine.replaceFirst("***", "</b></i>")
+                            opened = opened.filter { it != "i" && it != "b" }.toMutableList()
+                        } else {
+                            workingLine = workingLine.replaceFirst("***", "<b><i>")
+                            opened.addAll(listOf("b", "i"))
+                        }
+                }
+            }
+        }
+/*        while (workingLine.contains(Regex("""[^\*]\*{2}[^\*]"""))) {
+            if (opened.contains("b")) {
+                workingLine = workingLine.replaceFirst("**", "</b>")
+                opened = opened.filter { it != "b" }.toMutableList()
+            } else {
+                workingLine = workingLine.replaceFirst("**", "<b>")
+                opened.add("b")
+            }
+        }
+        while (workingLine.contains(Regex("""[^\*]\*[^\*]"""))) {
+            if (opened.contains("i")) {
+                workingLine = workingLine.replaceFirst("*", "</i>")
+                opened = opened.filter { it != "i" }.toMutableList()
+            } else {
+                workingLine = workingLine.replaceFirst("*", "<i>")
+                opened.add("i")
+            }
+        }
+        while (workingLine.contains("***")) {
+            if (opened.containsAll(listOf("i", "b"))) {
+                if (opened.indexOf("i") > opened.indexOf("b"))
+                    workingLine = workingLine.replaceFirst("***", "</i></b>") // b, i
+                else workingLine = workingLine.replaceFirst("***", "</b></i>")
+                opened = opened.filter { it != "i" && it != "b" }.toMutableList()
+            } else {
+                workingLine = workingLine.replaceFirst("***", "<b><i>")
+                opened.addAll(listOf("b", "i"))
+            }
+        } */
+        output.write(workingLine + "\n")
+    }
+    output.write("</p>\n" + "</body>\n" + "</html>")
+    output.close()
 }
 
 /**
