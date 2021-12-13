@@ -305,10 +305,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     output.write("<html>\n" + "<body>\n" + "<p>\n")
 
-    for (line in input) {
-        var workingLine = line
+    for (i in input.indices) {
+        var workingLine = input[i]
         if (workingLine.isEmpty() || workingLine == "\t" || workingLine.matches(Regex(""" +"""))) {
-            if (lastLineIsNotEmpty) {
+            if (lastLineIsNotEmpty && i != input.size - 1) {
                 output.write("</p>\n" + "<p>\n")
                 lastLineIsNotEmpty = false
             }
