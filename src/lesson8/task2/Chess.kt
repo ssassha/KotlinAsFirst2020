@@ -22,7 +22,18 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String = if (row in 1..8) when (column) {
+        1 -> "a$row"
+        2 -> "b$row"
+        3 -> "c$row"
+        4 -> "d$row"
+        5 -> "e$row"
+        6 -> "f$row"
+        7 -> "g$row"
+        8 -> "h$row"
+        else -> ""
+    }
+    else ""
 }
 
 /**
@@ -32,7 +43,20 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    if (!notation.matches(Regex("""[a-h][1-8]"""))) throw IllegalArgumentException()
+    return when (notation[0]) {
+        'a' -> Square(1, notation[1].toString().toInt())
+        'b' -> Square(2, notation[1].toString().toInt())
+        'c' -> Square(3, notation[1].toString().toInt())
+        'd' -> Square(4, notation[1].toString().toInt())
+        'e' -> Square(5, notation[1].toString().toInt())
+        'f' -> Square(6, notation[1].toString().toInt())
+        'g' -> Square(7, notation[1].toString().toInt())
+        'h' -> Square(8, notation[1].toString().toInt())
+        else -> throw IllegalArgumentException()
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -181,7 +205,26 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+
+fun minWay(x1: Int, y1: Int, x2: Int, y2: Int, n: Int): Int {
+    if (x1 == x2 && y1 == y2) return 1
+    if (n > 6 || x1 > 8 || x1 < 1 || y1 > 8 || y1 < 1) return 5000
+    return 1 + minOf(
+        minWay(x1 + 1, y1 + 2, x2, y2, n + 1),
+        minWay(x1 - 1, y1 + 2, x2, y2, n + 1),
+        minWay(x1 + 1, y1 - 2, x2, y2, n + 1),
+        minWay(x1 - 1, y1 - 2, x2, y2, n + 1),
+        minWay(x1 + 2, y1 + 1, x2, y2, n + 1),
+        minWay(x1 - 2, y1 + 1, x2, y2, n + 1),
+        minWay(x1 + 2, y1 - 1, x2, y2, n + 1),
+        minWay(x1 - 2, y1 - 1, x2, y2, n + 1)
+    )
+}
+
+fun knightMoveNumber(start: Square, end: Square): Int =
+    if (start.column !in 1..8 || start.row !in 1..8 || end.column !in 1..8 || end.row !in 1..8) throw IllegalArgumentException()
+    else if (start == end) 0
+    else minWay(start.column, start.row, end.column, end.row, 0) - 1
 
 /**
  * Очень сложная (10 баллов)
