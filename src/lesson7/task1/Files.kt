@@ -359,9 +359,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     }
     output.write("</p>\n" + "</body>\n" + "</html>")
     output.close()
-    //while (File(outputName).readText().endsWith("</p>\n<p>\n</p>\n</body>\n</html>"))
-
-
 }
 
 /**
@@ -528,6 +525,63 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+
+    val outputWriter = File(outputName).bufferedWriter()
+
+    outputWriter.write(" $lhv | $rhv\n")
+
+    var denominator = ""
+    var currentDigitIndex = 0
+
+    if (lhv < rhv) denominator = "0"
+    else {
+        do {
+            denominator += lhv.toString()[currentDigitIndex] // делимое
+            currentDigitIndex += 1
+        } while ((denominator.toInt() / rhv) == 0)
+    }
+
+    var subtrahend = (denominator.toInt() / rhv) * rhv // вычитаемое
+
+    var currentLine = ""
+    currentLine += "-$subtrahend"
+
+    val res = lhv / rhv
+    while (currentLine.length != (" $lhv | ").length) {
+        currentLine += " "
+    }
+
+    outputWriter.write(currentLine + "$res\n")
+
+    for (i in "-$subtrahend") outputWriter.write("-")
+
+    outputWriter.write("\n")
+
+    if (lhv >= rhv) {
+        denominator =
+            (lhv.toString().take(currentDigitIndex).toInt() - subtrahend).toString() + lhv.toString()[currentDigitIndex]
+
+        while (currentDigitIndex != lhv.toString().length) {
+            currentLine = ""
+            while ((currentLine + denominator).length != currentDigitIndex + 2) currentLine += " "
+            currentLine += denominator + "\n"
+            outputWriter.write(currentLine)
+            subtrahend = (denominator.toInt() / rhv) * rhv
+            currentLine = "-$subtrahend"
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            outputWriter.write(currentLine + "\n")
+            currentLine = ""
+            do currentLine += "-" while (currentLine.length != "-$subtrahend".length)
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            outputWriter.write(currentLine + "\n")
+            currentDigitIndex++
+            if (currentDigitIndex < lhv.toString().length)
+                denominator = (denominator.toInt() - subtrahend).toString() + lhv.toString()[currentDigitIndex]
+        }
+    }
+    currentLine = (lhv % rhv).toString()
+    while (currentLine.length != " $lhv".length) currentLine = " $currentLine"
+    outputWriter.write(currentLine)
+    outputWriter.close()
 }
 
