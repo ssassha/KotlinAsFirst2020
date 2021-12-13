@@ -557,7 +557,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     outputWriter.write("\n")
 
-    if (lhv > rhv) {
+    if (lhv.toString().length > rhv.toString().length) {
         denominator =
             (lhv.toString().take(currentDigitIndex).toInt() - subtrahend).toString() + lhv.toString()[currentDigitIndex]
 
