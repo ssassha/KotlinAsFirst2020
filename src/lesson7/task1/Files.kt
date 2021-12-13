@@ -354,7 +354,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
         }
-        workingLine = workingLine.replaceFirst(Regex("""</p>\n<p>$"""),"")
+        workingLine = workingLine.replaceFirst(Regex("""</p>\n<p>\n$"""),"")
         output.write(workingLine + "\n")
     }
     output.write("</p>\n" + "</body>\n" + "</html>")
