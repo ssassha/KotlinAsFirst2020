@@ -303,11 +303,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var opened = mutableListOf<String>()
     var lastLineIsNotEmpty = false    // была ли прошлая строка не пустой
 
-    while (input[input.lastIndex].isEmpty() || input[input.lastIndex] == "\t" || input[input.lastIndex].matches(
-            Regex(
-                """ +"""
-            )
+    while (input.size > 1 &&
+        (input[input.lastIndex].isEmpty() || input[input.lastIndex] == "\t" || input[input.lastIndex].matches(
+            Regex(""" +""")
         )
+                )
     ) input = input.dropLast(1)
 
     output.write("<html><body><p>")
@@ -350,9 +350,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                     }
                     "***" ->
                         if (opened.containsAll(listOf("i", "b"))) {
-                            if (opened.indexOf("i") > opened.indexOf("b"))
-                                workingLine = workingLine.replaceFirst("***", "</i></b>") // b, i
-                            else workingLine = workingLine.replaceFirst("***", "</b></i>")
+                            workingLine = if (opened.indexOf("i") > opened.indexOf("b"))
+                                workingLine.replaceFirst("***", "</i></b>") // b, i
+                            else workingLine.replaceFirst("***", "</b></i>")
                             opened = opened.filter { it != "i" && it != "b" }.toMutableList()
                         } else {
                             workingLine = workingLine.replaceFirst("***", "<b><i>")
