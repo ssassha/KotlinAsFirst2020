@@ -298,18 +298,25 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
-    val input = File(inputName).readLines()
+    var input = File(inputName).readLines()
     val output = File(outputName).bufferedWriter()
     var opened = mutableListOf<String>()
     var lastLineIsNotEmpty = false    // была ли прошлая строка не пустой
 
-    output.write("<html>\n" + "<body>\n" + "<p>\n")
+    while (input[input.lastIndex].isEmpty() || input[input.lastIndex] == "\t" || input[input.lastIndex].matches(
+            Regex(
+                """ +"""
+            )
+        )
+    ) input = input.dropLast(1)
+
+    output.write("<html><body><p>")
 
     for (i in input.indices) {
         var workingLine = input[i]
         if (workingLine.isEmpty() || workingLine == "\t" || workingLine.matches(Regex(""" +"""))) {
             if (lastLineIsNotEmpty && i != input.size - 1) {
-                output.write("</p>\n" + "<p>\n")
+                output.write("</p><p>")
                 lastLineIsNotEmpty = false
             }
             continue
@@ -354,10 +361,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
         }
-        workingLine = workingLine.replaceFirst(Regex("""(</p>\n<p>\n)$"""), "")
-        output.write(workingLine + "\n")
+        output.write(workingLine)
     }
-    output.write("</p>\n" + "</body>\n" + "</html>")
+    output.write("</p></body></html>")
     output.close()
 }
 
@@ -525,58 +531,39 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-
     val outputWriter = File(outputName).bufferedWriter()
-
     outputWriter.write(" $lhv | $rhv\n")
-
     var denominator = ""
     var currentDigitIndex = 0
-
     if (lhv < rhv) denominator = "0"
-    else {
+    else
         do {
             denominator += lhv.toString()[currentDigitIndex] // делимое
             currentDigitIndex += 1
-        } while ((denominator.toInt() / rhv) == 0)
-    }
-
+        } while (denominator.toInt() < rhv)
     var subtrahend = (denominator.toInt() / rhv) * rhv // вычитаемое
-
-    var currentLine = ""
-    currentLine += "-$subtrahend"
-
+    var currentLine = "-$subtrahend"
+    while (currentLine.length != (" $lhv | ").length) currentLine += " "
     val res = lhv / rhv
-    while (currentLine.length != (" $lhv | ").length) {
-        currentLine += " "
-    }
-
     outputWriter.write(currentLine + "$res\n")
-
     for (i in "-$subtrahend") outputWriter.write("-")
-
     outputWriter.write("\n")
-
-    if (lhv.toString().length > rhv.toString().length) {
-        denominator =
-            (lhv.toString().take(currentDigitIndex).toInt() - subtrahend).toString() + lhv.toString()[currentDigitIndex]
-
+    if (lhv > rhv) {
         while (currentDigitIndex != lhv.toString().length) {
-            currentLine = ""
-            while ((currentLine + denominator).length != currentDigitIndex + 2) currentLine += " "
-            currentLine += denominator + "\n"
+            denominator = (denominator.toInt() % rhv).toString() + lhv.toString()[currentDigitIndex]
+            currentLine = denominator
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            currentLine += "\n"
             outputWriter.write(currentLine)
             subtrahend = (denominator.toInt() / rhv) * rhv
             currentLine = "-$subtrahend"
             while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
             outputWriter.write(currentLine + "\n")
             currentLine = ""
-            do currentLine += "-" while (currentLine.length != "-$subtrahend".length)
+            for (i in "-$subtrahend") currentLine += "-"
             while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
             outputWriter.write(currentLine + "\n")
             currentDigitIndex++
-            if (currentDigitIndex < lhv.toString().length)
-                denominator = (denominator.toInt() - subtrahend).toString() + lhv.toString()[currentDigitIndex]
         }
     }
     currentLine = (lhv % rhv).toString()
