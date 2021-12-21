@@ -532,7 +532,15 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputWriter = File(outputName).bufferedWriter()
-    outputWriter.write(" $lhv | $rhv\n")
+    val res = lhv / rhv
+    var strLhv = ""
+    strLhv = if (lhv in 10 until rhv) {
+        outputWriter.write("$lhv | $rhv\n")
+        lhv.toString()
+    } else {
+        outputWriter.write(" $lhv | $rhv\n")
+        " $lhv"
+    }
     var denominator = ""
     var currentDigitIndex = 0
     if (lhv < rhv) denominator = "0"
@@ -543,10 +551,14 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         } while (denominator.toInt() < rhv)
     var subtrahend = (denominator.toInt() / rhv) * rhv // вычитаемое
     var currentLine = "-$subtrahend"
-    while (currentLine.length != (" $lhv | ").length) currentLine += " "
-    val res = lhv / rhv
+    if (lhv < rhv) {
+        while (currentLine.length < strLhv.length) currentLine = " $currentLine"
+        while (currentLine.length != ("$strLhv | ").length) currentLine += " "
+    } else while (currentLine.length != (" $lhv | ").length) currentLine += " "
     outputWriter.write(currentLine + "$res\n")
-    for (i in "-$subtrahend") outputWriter.write("-")
+    if (lhv < rhv) {
+        for (i in strLhv) outputWriter.write("-")
+    } else for (i in "-$subtrahend") outputWriter.write("-")
     outputWriter.write("\n")
     if (lhv > rhv) {
         while (currentDigitIndex != lhv.toString().length) {
@@ -568,7 +580,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
     }
     currentLine = (lhv % rhv).toString()
-    while (currentLine.length != " $lhv".length) currentLine = " $currentLine"
+    while (currentLine.length != strLhv.length) currentLine = " $currentLine"
     outputWriter.write(currentLine)
     outputWriter.close()
 }
