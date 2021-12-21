@@ -560,7 +560,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
             outputWriter.write(currentLine + "\n")
             currentLine = ""
-            for (i in "-$subtrahend") currentLine += "-"
+            val longestNumber = if (denominator.length > "-$subtrahend".length) denominator else "-$subtrahend"
+            for (i in longestNumber) currentLine += "-"
             while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
             outputWriter.write(currentLine + "\n")
             currentDigitIndex++
