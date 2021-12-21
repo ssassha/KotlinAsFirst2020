@@ -533,8 +533,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputWriter = File(outputName).bufferedWriter()
     val res = lhv / rhv
-    var strLhv = ""
-    strLhv = if (lhv in 10 until rhv) {
+    val strLhv = if (lhv in 10 until rhv || ((lhv / rhv) * rhv).toString().length + 1 == lhv.toString().length) {
         outputWriter.write("$lhv | $rhv\n")
         lhv.toString()
     } else {
@@ -554,7 +553,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     if (lhv < rhv) {
         while (currentLine.length < strLhv.length) currentLine = " $currentLine"
         while (currentLine.length != ("$strLhv | ").length) currentLine += " "
-    } else while (currentLine.length != (" $lhv | ").length) currentLine += " "
+    } else while (currentLine.length != ("$strLhv | ").length) currentLine += " "
     outputWriter.write(currentLine + "$res\n")
     if (lhv < rhv) {
         for (i in strLhv) outputWriter.write("-")
