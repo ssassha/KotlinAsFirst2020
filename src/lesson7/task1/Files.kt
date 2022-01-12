@@ -490,3 +490,43 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
 
+/**
+ * Дан текстовый файл, в котором схематично изображена схема
+ * прямоугольного мини-лабиринта:
+ * - во всех строках одинаковое количество символов
+ * - символ # обозначает препятствие
+ * - символ . свободное место
+ * - символ * начальное местоположение "Робота"
+ * Функция, которую нужно написать, принимает как параметры
+ * имя этого файла и строку с командами для робота вида
+ * "rllluddurld", где r обозначает движение вправо, l влево, u вверх
+ * и d вниз, другие команды запрещены. Функция должна вернуть
+ * координаты той клетки лабиринта, на которой робот окажется
+ * после выполнения команд. Если очередная команда требует от
+ * робота наступить на препятствие или выйти за границы
+ * лабиринта, робот просто остаётся на месте и переходит к следующей команде.
+ */
+
+fun maze(inputName: String, commands: String): Pair<Int, Int> {
+    if (!commands.matches(Regex("""[rlud]+"""))) throw IllegalArgumentException()
+    var start: Pair<Int, Int> = -1 to -1
+    val lab = mutableListOf<List<Char>>()
+    for (line in File(inputName).readLines()) {
+        lab.add(line.toList())
+        if ('*' in line) start = lab.size - 1 to line.toList().indexOf('*')
+    }
+    for (command in commands) {
+        when (command) {
+            'r' -> if (start.second + 1 <= lab[start.first].size - 1 && lab[start.first][start.second + 1] != '#')
+                start = start.first to start.second + 1
+            'l' -> if (start.second - 1 >= 0 && lab[start.first][start.second - 1] != '#')
+                start = start.first to start.second - 1
+            'u' -> if (start.first - 1 >= 0 && lab[start.first - 1][start.second] != '#')
+                start = start.first - 1 to start.second
+            'd' -> if (start.first + 1 <= lab.size - 1 && lab[start.first + 1][start.second] != '#')
+                start = start.first + 1 to start.second
+        }
+    }
+    return start.first + 1 to start.second + 1
+}
+

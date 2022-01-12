@@ -441,4 +441,11 @@ Basic, Ruby, Swift.
 
         File("temp.txt").delete()
     }
+
+    @Test
+    fun maze() {
+        assertEquals(1 to 5, maze("input/maze_1.txt", "rruuulrrru"))
+        assertEquals(6 to 1, maze("input/maze_2.txt", "udududlrrlud"))
+        Assertions.assertThrows(IllegalArgumentException::class.java) { maze("input/maze_2.txt", "hello world") }
+    }
 }
