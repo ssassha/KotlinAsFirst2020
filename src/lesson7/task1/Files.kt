@@ -509,7 +509,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
 fun maze(inputName: String, commands: String): Pair<Int, Int> {
     if (!commands.matches(Regex("""[rlud]+"""))) throw IllegalArgumentException()
-    var start: Pair<Int, Int> = -1 to -1
+    var start = -1 to -1
     val lab = mutableListOf<List<Char>>()
     for (line in File(inputName).readLines()) {
         lab.add(line.toList())
