@@ -508,25 +508,27 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 
 fun maze(inputName: String, commands: String): Pair<Int, Int> {
-    if (!commands.matches(Regex("""[rlud]+"""))) throw IllegalArgumentException()
     var start = -1 to -1
-    val lab = mutableListOf<List<Char>>()
+    val lab = mutableListOf<MutableList<Char>>()
     for (line in File(inputName).readLines()) {
-        lab.add(line.toList())
-        if ('*' in line) start = lab.size - 1 to line.toList().indexOf('*')
+        lab.add(line.toMutableList())
+        lab[lab.size - 1].add(0, '#')
+        lab[lab.size - 1].add('#')
+        if ('*' in line) start = lab.size to line.toList().indexOf('*') + 1
     }
+    lab.add(0, lab[0].toMutableList())
+    lab.first().replaceAll { '#' }
+    lab.add(lab[0])
     for (command in commands) {
-        when (command) {
-            'r' -> if (start.second + 1 <= lab[start.first].size - 1 && lab[start.first][start.second + 1] != '#')
-                start = start.first to start.second + 1
-            'l' -> if (start.second - 1 >= 0 && lab[start.first][start.second - 1] != '#')
-                start = start.first to start.second - 1
-            'u' -> if (start.first - 1 >= 0 && lab[start.first - 1][start.second] != '#')
-                start = start.first - 1 to start.second
-            'd' -> if (start.first + 1 <= lab.size - 1 && lab[start.first + 1][start.second] != '#')
-                start = start.first + 1 to start.second
+        val check = when (command) {
+            'r' -> start.first to start.second + 1
+            'l' -> start.first to start.second - 1
+            'u' -> start.first - 1 to start.second
+            'd' -> start.first + 1 to start.second
+            else -> throw IllegalArgumentException()
         }
+        if (lab[check.first][check.second] != '#') start = check.first to check.second
     }
-    return start.first + 1 to start.second + 1
+    return start.first to start.second
 }
 
