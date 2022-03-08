@@ -102,7 +102,10 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (!phone.matches(Regex("""(\+\d+)?[ \-]*(\([ -]*\d+[ \-\d]*\))?[ \-\d]*"""))) return ""
+    else return Regex("""[\- \)\(]""").replace(phone, "")
+}
 
 /**
  * Средняя (5 баллов)
@@ -139,6 +142,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
+<<<<<<< .merge_file_a61916
     val str = expression.split(" ")
     var res = 0
     var minus = 1
@@ -154,6 +158,22 @@ fun plusMinus(expression: String): Int {
         }
     }
     return res
+=======
+    val exceptionCheck = Regex("""^\d+( [\+\-] \d+)*""")
+    var sum = 0
+    if (!expression.matches(exceptionCheck)) throw IllegalArgumentException()
+    else {
+        val listOfSymbols = expression.split(" ")
+        sum += listOfSymbols[0].toInt()
+        for (i in 0 until listOfSymbols.size)
+            when (listOfSymbols[i]) {
+                "+" -> sum += listOfSymbols[i + 1].toInt()
+                "-" -> sum -= listOfSymbols[i + 1].toInt()
+                else -> continue
+            }
+        return sum
+    }
+>>>>>>> .merge_file_a65140
 }
 
 /**
@@ -165,7 +185,15 @@ fun plusMinus(expression: String): Int {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val loweredStr = str.lowercase()
+    val listOfWords = loweredStr.split(' ')
+    if (listOfWords.size == 1) return -1
+    for (i in listOfWords.indices - 1) {
+        if (listOfWords[i] == listOfWords[i + 1]) return loweredStr.indexOf(listOfWords[i] + " " + listOfWords[i])
+    }
+    return -1
+}
 
 /**
  * Сложная (6 баллов)
@@ -179,6 +207,7 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
+<<<<<<< .merge_file_a61916
     val productPrice = description.split("; ")
     var maxPrice = 0.0
     var res = ""
@@ -191,6 +220,19 @@ fun mostExpensive(description: String): String {
         }
     }
     return res
+=======
+    val formatCheck =
+        Regex("""(.+ \d+(\.\d+)?; )*.+ \d+(\.\d+)?""")
+    if (description.matches(formatCheck)) {
+        val costs = Regex("""[^\d\.]+""").split(description).filter { it != "" }.map { it.toDouble() }
+        val product = Regex("""[ ;\d\.]+""").split(description)
+        var maxCost = 0.0
+        for (i in costs) {
+            if (i > maxCost) maxCost = i
+        }
+        return product[costs.indexOf(maxCost)]
+    } else return ""
+>>>>>>> .merge_file_a65140
 }
 
 /**

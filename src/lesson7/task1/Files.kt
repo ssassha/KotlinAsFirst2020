@@ -84,6 +84,7 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
+<<<<<<< .merge_file_a38604
     val subs = substrings.toSet().toList()
     File(inputName).forEachLine {
         for (key in subs) {
@@ -97,6 +98,21 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         }
     }
     return res.toMap()
+=======
+    val text = File(inputName).readLines().toString()
+
+    for (substr in substrings) {
+        var textCopy = text
+        var count = 0
+        while (textCopy.contains(substr, ignoreCase = true)) {
+            count++
+            textCopy = textCopy.removeRange(0..textCopy.indexOf(substr, 0, true))
+        }
+
+        res[substr] = count
+    }
+    return res
+>>>>>>> .merge_file_a56284
 }
 
 
@@ -306,21 +322,88 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+
+    var input = File(inputName).readLines()
+    val output = File(outputName).bufferedWriter()
+    var opened = mutableListOf<String>()
+    var lastLineIsNotEmpty = false    // была ли прошлая строка не пустой
+
+    while (input.size > 1 &&
+        (input[input.lastIndex].isEmpty() || input[input.lastIndex] == "\t" || input[input.lastIndex].matches(
+            Regex(""" +""")
+        )
+                )
+    ) input = input.dropLast(1)
+
+    output.write("<html><body><p>")
+
+    for (i in input.indices) {
+        var workingLine = input[i]
+        if (workingLine.isEmpty() || workingLine == "\t" || workingLine.matches(Regex(""" +"""))) {
+            if (lastLineIsNotEmpty && i != input.size - 1) {
+                output.write("</p><p>")
+                lastLineIsNotEmpty = false
+            }
+            continue
+        } else lastLineIsNotEmpty = true
+        while (workingLine.contains("~~")) {
+            if (opened.contains("s")) {
+                workingLine = workingLine.replaceFirst("~~", "</s>")
+                opened = opened.filter { it != "s" }.toMutableList()
+            } else {
+                workingLine = workingLine.replaceFirst("~~", "<s>")
+                opened.add("s")
+            }
+        }
+        while (workingLine.contains(Regex("""\*{1,3}"""))) {
+            val substrToChange = workingLine.split(Regex("""[^*]+"""))
+            for (substr in substrToChange) {
+                when (substr) {
+                    "*" -> if (opened.contains("i")) {
+                        workingLine = workingLine.replaceFirst("*", "</i>")
+                        opened = opened.filter { it != "i" }.toMutableList()
+                    } else {
+                        workingLine = workingLine.replaceFirst("*", "<i>")
+                        opened.add("i")
+                    }
+                    "**" -> if (opened.contains("b")) {
+                        workingLine = workingLine.replaceFirst("**", "</b>")
+                        opened = opened.filter { it != "b" }.toMutableList()
+                    } else {
+                        workingLine = workingLine.replaceFirst("**", "<b>")
+                        opened.add("b")
+                    }
+                    "***" ->
+                        if (opened.containsAll(listOf("i", "b"))) {
+                            workingLine = if (opened.indexOf("i") > opened.indexOf("b"))
+                                workingLine.replaceFirst("***", "</i></b>") // b, i
+                            else workingLine.replaceFirst("***", "</b></i>")
+                            opened = opened.filter { it != "i" && it != "b" }.toMutableList()
+                        } else {
+                            workingLine = workingLine.replaceFirst("***", "<b><i>")
+                            opened.addAll(listOf("b", "i"))
+                        }
+                }
+            }
+        }
+        output.write(workingLine)
+    }
+    output.write("</p></body></html>")
+    output.close()
 }
 
 /**
@@ -357,65 +440,65 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -442,23 +525,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -472,22 +555,72 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val outputWriter = File(outputName).bufferedWriter()
+    val res = lhv / rhv
+    val strLhv = if (lhv in 10 until rhv || ((lhv / rhv) * rhv).toString().length + 1 == lhv.toString().length) {
+        outputWriter.write("$lhv | $rhv\n")
+        lhv.toString()
+    } else {
+        outputWriter.write(" $lhv | $rhv\n")
+        " $lhv"
+    }
+    var denominator = ""
+    var currentDigitIndex = 0
+    if (lhv < rhv) denominator = "0"
+    else
+        do {
+            denominator += lhv.toString()[currentDigitIndex] // делимое
+            currentDigitIndex += 1
+        } while (denominator.toInt() < rhv)
+    var subtrahend = (denominator.toInt() / rhv) * rhv // вычитаемое
+    var currentLine = "-$subtrahend"
+    if (lhv < rhv) {
+        while (currentLine.length < strLhv.length) currentLine = " $currentLine"
+        while (currentLine.length != ("$strLhv | ").length) currentLine += " "
+    } else while (currentLine.length != ("$strLhv | ").length) currentLine += " "
+    outputWriter.write(currentLine + "$res\n")
+    if (lhv < rhv) {
+        for (i in strLhv) outputWriter.write("-")
+    } else for (i in "-$subtrahend") outputWriter.write("-")
+    outputWriter.write("\n")
+    if (lhv > rhv) {
+        while (currentDigitIndex != lhv.toString().length) {
+            denominator = (denominator.toInt() % rhv).toString() + lhv.toString()[currentDigitIndex]
+            currentLine = denominator
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            currentLine += "\n"
+            outputWriter.write(currentLine)
+            subtrahend = (denominator.toInt() / rhv) * rhv
+            currentLine = "-$subtrahend"
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            outputWriter.write(currentLine + "\n")
+            currentLine = ""
+            val longestNumber = if (denominator.length > "-$subtrahend".length) denominator else "-$subtrahend"
+            for (i in longestNumber) currentLine += "-"
+            while (currentLine.length != currentDigitIndex + 2) currentLine = " $currentLine"
+            outputWriter.write(currentLine + "\n")
+            currentDigitIndex++
+        }
+    }
+    currentLine = (lhv % rhv).toString()
+    while (currentLine.length != strLhv.length) currentLine = " $currentLine"
+    outputWriter.write(currentLine)
+    outputWriter.close()
 }
 
 /**

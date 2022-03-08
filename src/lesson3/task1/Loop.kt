@@ -72,11 +72,19 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+<<<<<<< .merge_file_a62488
 fun digitNumber(n: Int): Int =
     when {
         n / 10 == 0 -> 1
         else -> digitNumber(n / 10) + 1
     }
+=======
+fun digitNumber(n: Int): Int {
+    var k = 0
+    do (k++) while (n % 10.0.pow(k) != n.toDouble())
+    return k
+}
+>>>>>>> .merge_file_a65148
 
 /**
  * Простая (2 балла)
@@ -85,6 +93,7 @@ fun digitNumber(n: Int): Int =
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
+<<<<<<< .merge_file_a62488
     var a = 1
     var b = 1
     var res = 2
@@ -96,6 +105,19 @@ fun fib(n: Int): Int {
     }
     return b
 }
+=======
+    var a = 0
+    var b = 1
+    var p: Int
+    for (j in 2..n) {
+        p = b
+        b += a
+        a = p
+    }
+    return b
+}
+
+>>>>>>> .merge_file_a65148
 
 /**
  * Простая (2 балла)
@@ -148,6 +170,7 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
+<<<<<<< .merge_file_a62488
 fun gcd(m: Int, n: Int): Int { //Алгоритм Евклида на нахождение НОД
     var a = maxOf(m, n)
     var b = minOf(m, n)
@@ -162,6 +185,20 @@ fun gcd(m: Int, n: Int): Int { //Алгоритм Евклида на нахож
 
 fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
 
+=======
+fun lcm(m: Int, n: Int): Int {
+    var r1 = max(m, n)
+    var r2 = min(m, n)
+    while (r2 != 0) {
+        r1 %= r2
+        if (r1 == 0) {
+            return n * m / r2
+        }
+        r2 %= r1
+    }
+    return n * m / r1
+}
+>>>>>>> .merge_file_a65148
 /**
  * Средняя (3 балла)
  *
@@ -169,8 +206,12 @@ fun lcm(m: Int, n: Int): Int = m * n / gcd(m, n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
+<<<<<<< .merge_file_a62488
 fun isCoPrime(m: Int, n: Int): Boolean =
     gcd(m, n) == 1
+=======
+fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+>>>>>>> .merge_file_a65148
 
 /**
  * Средняя (3 балла)
@@ -281,6 +322,7 @@ fun cos(x: Double, eps: Double): Double {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
+<<<<<<< .merge_file_a62488
     var number = 1
     var line = 1
     while (line < n) {
@@ -288,6 +330,22 @@ fun squareSequenceDigit(n: Int): Int {
         line += digitNumber(number.toDouble().pow(2).toInt())
     }
     return (number.toDouble().pow(2).toInt()) / 10.0.pow(line - n).toInt() % 10
+=======
+    var digInOrder = 0
+    var i = 1.0
+    var sqr = 0
+    while (digInOrder < n) {
+        sqr = i.pow(2).toInt()
+        digInOrder += digitNumber(sqr)
+        i += 1
+    }
+    val digit = if (digInOrder == n) {
+        sqr % 10
+    } else {
+        (sqr / 10.0.pow(digInOrder - n).toInt()) % 10
+    }
+    return digit
+>>>>>>> .merge_file_a65148
 }
 
 /**
@@ -300,6 +358,7 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
+<<<<<<< .merge_file_a62488
     var number = 1
     var line = 1
     while (line < n) {
@@ -307,4 +366,20 @@ fun fibSequenceDigit(n: Int): Int {
         line += digitNumber(fib(number))
     }
     return fib(number) / 10.0.pow(line - n).toInt() % 10
+=======
+    var digInOrder = 0
+    var i = 1
+    var numbFib = 0
+    while (digInOrder < n) {
+        numbFib = fib(i)
+        digInOrder += digitNumber(numbFib)
+        i += 1
+    }
+    val digit: Int = if (digInOrder == n) {
+        numbFib % 10
+    } else {
+        (numbFib / 10.0.pow(digInOrder - n).toInt()) % 10
+    }
+    return digit
+>>>>>>> .merge_file_a65148
 }

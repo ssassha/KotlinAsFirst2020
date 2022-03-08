@@ -100,8 +100,17 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+<<<<<<< .merge_file_a28052
     val res = mutableMapOf<Int, List<String>>()
     for ((name, grade) in grades) res[grade] = res.getOrDefault(grade, listOf()) + name
+=======
+    val gradeSet = grades.values.toMutableSet()
+    val res = mutableMapOf<Int, List<String>>()
+    for (gr in gradeSet) {
+        val studentList = grades.filterValues { it == gr }.keys.toList()
+        res += Pair(gr, studentList)
+    }
+>>>>>>> .merge_file_a63116
     return res
 }
 
@@ -115,7 +124,16 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
+<<<<<<< .merge_file_a28052
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.keys.all { a[it] == b[it] }
+=======
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    for ((KeyInA, ValueInA) in a) {
+        if (b[KeyInA] != ValueInA) return false
+    }
+    return true
+}
+>>>>>>> .merge_file_a63116
 
 /**
  * Простая (2 балла)
@@ -164,6 +182,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+<<<<<<< .merge_file_a28052
     val res = mutableMapOf<String, String>()
     for ((key, value) in mapA) {
         res[key] = value
@@ -174,6 +193,17 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     }
     for ((key, value) in mapB) if (key !in res) res[key] = value
     return res
+=======
+    val resMap = mapA.toMutableMap()
+
+    for ((name, telephoneNumber) in mapB) {
+        if (mapA[name] != telephoneNumber) {
+            if (mapA[name] != null) resMap[name] = mapA[name] + ", " + telephoneNumber
+            else resMap += Pair(name, telephoneNumber)
+        }
+    }
+    return resMap
+>>>>>>> .merge_file_a63116
 }
 
 /**
@@ -339,6 +369,15 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     }
     return Pair(-1, -1)
 }
+
+/* for (a in list) {
+        for (b in list) {
+            if (a + b == number && list.indexOf(a) != list.indexOf(b))
+                return Pair(list.indexOf(a), list.indexOf(b))
+        }
+    }
+    return Pair(-1, -1) */
+
 
 /**
  * Очень сложная (8 баллов)
